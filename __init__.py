@@ -20,8 +20,33 @@ configurationsdatei = 'PYSB.config'
 #evtl python-argparse für kommandozeilen interpretierung
 #python-regex
 
-def play(tondatei):
-    print(str(tondatei))
+def play(hk):
+#    print(*hk)
+#    print(hk.index(hotkey))
+#    print(keyboard.key_to_scan_codes(keyboard.stash_state()))
+    hotkeypressed=keyboard.key_to_scan_codes(keyboard.stash_state())
+#    print(hotkeypressed[0])
+#    print(hotkeypressed)
+    try:
+        IndexInHK=hk.index(hotkeypressed[0])
+    except:
+        print("Variable "+hotkeypressed[0]+" nichtgefunden")
+#    print("index in hk var:"+str(IndexInHK))
+    hotkeyname=hk[IndexInHK-1]
+#    print(hotkeyname[0])
+    tondatei=hk[IndexInHK-2]
+    print("""
+    #################################
+    #                               play funktion                              #""")
+    print("# Hotkey-Liste                      :")
+    print(*hk)
+    print("# Hotkeycode-Direkt ausgelesen      : "+str(keyboard.key_to_scan_codes(keyboard.stash_state())))
+    print("# Hotkey in variable gepackt (tulpe): "+str(hotkeypressed))
+    print("# Hotkey wert 0 der tulpe           : "+str(hotkeypressed[0]))
+    print("# Index in hk var                   : "+str(IndexInHK))
+    print("# Hotkeyname                        : "+hotkeyname[0])
+    print("# Abzuspielende Datei               : "+str(tondatei))
+    
     player = vlc3.MediaPlayer(tondatei)
     player.play()
     
@@ -31,12 +56,19 @@ def readconfig(configdatei):
     #print ("Name of the file: ", configuration.name)
     #print ("Closed or not : ", configuration.closed)
     #print ("Opening mode : ", configuration.mode)
+    durchl=1
     for i in configuration:
         hk.append(i.strip())
+        if durchl == 2:
+            keynummer=keyboard.key_to_scan_codes(i.strip())
+            hk.append(keynummer[0])
+            print(keynummer[0])
+            durchl=0
         print("Zeile in der Config Datei   :"+i)
         print("hotkeys-variable:::")
         print(*hk, sep=', ')
         print(":::")
+        durchl += 1
     return hk
 
 def startlisten(hk):
@@ -45,12 +77,15 @@ def startlisten(hk):
     print( "Elemente in der Liste: " + str(elementezahl))
     while num <= elementezahl:
         if num>=elementezahl:
-            break
+            return
         hotkey=str(hk[num+1].strip())
+        keynummer=hk[num+2]
         befehl=hk[num].strip()
-        print("Durchlauf "+str(num)+"   Hotkey:"+hotkey+"   Befehl:"+befehl)
-        keyboard.add_hotkey(hotkey, lambda: play(befehl))
-        num += 2
+        print("Durchlauf "+str(num)+"   Hotkey:"+hotkey+"-"+str(keynummer)+"   Befehl:"+befehl)
+        #keyboard.add_hotkey(hotkey, lambda: play(befehl))
+        print(id(befehl))
+        keyboard.add_hotkey(hotkey, lambda: play(hk))
+        num += 3
 
 
     #keyboard.add_hotkey("ä", lambda: play("bbs.mp3"))
