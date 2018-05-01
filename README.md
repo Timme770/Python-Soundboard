@@ -1,5 +1,5 @@
 # Python-Soundboard
-Soundboart zur Bedienung per Tastatur (shortcut und einfache Tasten)
+Soundboard zur Bedienung per Tastatur (shortcut und einfache Tasten)
 
 Das Projekt wurde mit dem Programm eric6 erstellt. Die Projektdatei ist PYSB.e4p
 Die Idee und initiale Arbeit (Plugins finden, ersten Code zusammenstellen) stammt von TuxPlayDe (www.twitch.tv/tuxplayde)
