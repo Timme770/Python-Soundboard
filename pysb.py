@@ -49,6 +49,9 @@
 #evtl python-argparse für kommandozeilen interpretierung
 #python-regex
 
+# TODO rechtsklick auf Liste zum abspielen
+#
+
 import vlc3 as vlc
 import keyboard, time
 from tkinter import filedialog
@@ -67,7 +70,7 @@ class hotkeyerkennenDialog:
 
         self.frameLabel= Frame(top)
         self.frameLabel.pack(pady=5, padx=5)
-        
+
         self.l1 = Label(self.frameLabel, text="Erkannter Shortcut: ")
         self.l1.pack(side=LEFT)
         #self.l2 = Label(self.frameLabel, text="None")
@@ -81,14 +84,14 @@ class hotkeyerkennenDialog:
         self.b2.pack(side=RIGHT,pady=5)
 
     def ok(self):
- 
+
         root.hotkeyAufnahme = self.e.get()
         self.top.destroy()
-    
+
     def recordkey(self):
         self.b.focus()  # habe den focus hier auf den button gesetzt, damit die registrierte tasteneingabe (eventueller einzelner buchstabe oder zahl nicht im eingabefeld landen kann. Praktisch könnte zudem auch sein, wenn dann gleich durch bestätigen mit enter der Dialog Bestätigt werden kann.)
         test=keyboard.read_hotkey(suppress=False)
-        
+
         self.e.delete(0, END )
         self.e.insert(0, test)
 
@@ -115,6 +118,7 @@ def startlisten(hk):
 def stoplisten():
     for i in root.listenkeyeventhandlerliste:
         keyboard.remove_hotkey(i)
+    root.player.stop()
     root.listenkeyeventhandlerliste=[]
 
 def volumeset(event):
@@ -127,7 +131,7 @@ def volumeset(event):
         volume = 100
     if root.player.audio_set_volume(volume) == -1:
         print('schschschsch... self.errorDialog("Failed to set volume")')
-    
+
 def readconfig(configdatei):
     lauf=0
     hk=[]
@@ -141,7 +145,7 @@ def readconfig(configdatei):
                 zeile1_pfad=i.strip()
             elif lauf == 2:
                 zeile2_hk=i.strip()
-                
+
                 hk.append(    ( zeile1_pfad, zeile2_hk )  )
                 print(str(lauf))
                 print(hk)
@@ -173,6 +177,26 @@ def configinlistenladen():
 def listboxenneuereintraghinzufuegen():
     listbox_dn.insert(      END, "Neuer Eintrag..." )
     listbox_hk.insert(      END, "Neuer Eintrag..." )
+
+def listenrechtsklick_hk(event):
+    y = str(   str(event).split()[5]   ).strip("y=>") # im event steht der die zur liste relative posizion des cursors beim click - die so herausgefiltert wird
+    listenrechtsklick("hk", y)
+
+def listenrechtsklick_dn(event):
+    y = str(   str(event).split()[5]   ).strip("y=>") # im event steht der die zur liste relative posizion des cursors beim click - die so herausgefiltert wird
+    listenrechtsklick("dn", y)
+
+def listenrechtsklick(liste, y):
+    auswahl = listbox_dn.nearest(y) # die nearest funktion gibts mit hilfe von y den eintrag an position y wieder (relative koordinate)
+    listenrechtsklick_play(  listbox_dn.get(auswahl)  )
+
+def listenrechtsklick_play(file):
+    if file != "Neuer Eintrag...":
+        media = root.instanz_vlc.media_new(file)
+        print("mediavariable: " + str(media))
+        root.player.set_media(media)
+        root.player.play()
+
 
 def listendoppelklick_hotkey(event):
     root.hotkeyAufnahme = "test"
@@ -225,7 +249,7 @@ def listendelete(auswahl):
         del root.hotkeys[auswahl]
     else:
         print("ähhh")
-    
+
 
 
 #TODO irgendwann entfernen? definition zum ausgeben der tuple im terminal
@@ -239,7 +263,7 @@ def PRinttuple():
 
 if __name__ == '__main__':
    root = Tk()
-   
+
    root.hotkeys=readconfig("PYSB.config")
    root.hotkeyAufnahme = "older shiiit xD"
    root.listenkeyeventhandlerliste=[]
@@ -250,65 +274,67 @@ if __name__ == '__main__':
    saveButton       =   Button(  frame_saveandreload, text="Speichern"         , command=lambda: writeconfig(configurationsdatei, root.hotkeys)       )
    reloadButton.pack(           side=LEFT       ,padx=5, pady=5  )
    saveButton.pack(             side=RIGHT      ,padx=5, pady=5  )
-   
+
 ################2ter frame  [ Listen ]
-   frame_listen      = Frame(root)
-   frame_listen.pack()#side=TOP)
-   label_hk         = Label(    frame_listen, text="Shortcuts:" )
-   label_dn         = Label(    frame_listen, text="Dateinamen:")
-   listbox_hk       = Listbox(  frame_listen, width=20          )
-   listbox_dn       = Listbox(  frame_listen, width=60          )
-   label_hk.grid(       row=0, column=0)
-   label_dn.grid(       row=0, column=1)
-   listbox_hk.grid(     row=1, column=0)
-   listbox_dn.grid(     row=1, column=1)
+   frame_listen         = Frame(root)
+   frame_listen.pack(       fill=BOTH, expand=1)#side=TOP)
+
+   frame_listenleft      = Frame(frame_listen, width=23)
+   frame_listenleft.pack(    side=LEFT, fill=Y)#, expand=1)
+
+   frame_listenright   = Frame(frame_listen)
+   frame_listenright.pack( side=RIGHT, fill=BOTH, expand=1)
+
+   label_hk         = Label(    frame_listenleft, text="Shortcuts:" )
+   listbox_hk       = Listbox(  frame_listenleft)#, width=20          )
+   label_hk.pack(       side=TOP)
+   listbox_hk.pack(     fill=Y   , expand=1)
+
+   listbox_dn       = Listbox(  frame_listenright)#, width=60          )
+   label_dn         = Label(    frame_listenright, text="Dateinamen:")
+   label_dn.pack(       side=TOP)
+   listbox_dn.pack(     side=LEFT, fill=BOTH, expand=1)
+
+#   listbox_hk.grid(     row=1, column=0, fill=Y   , expand=1)
+#   listbox_dn.grid(     row=1, column=1, fill=BOTH, expand=1)
+   listbox_hk.bind(     '<Button-3>'       , listenrechtsklick_hk)
    listbox_hk.bind(     '<Double-Button-1>', listendoppelklick_hotkey)
    listbox_hk.bind(     '<Delete>'         , listendeletekey_hotkey)
+   listbox_dn.bind(     '<Button-3>'       , listenrechtsklick_dn)
    listbox_dn.bind(     '<Double-Button-1>', listendoppelklick_dateiname)
    listbox_dn.bind(     '<Delete>'         , listendeletekey_dateiname)
-   
+
    configinlistenladen()
-   label_editinfo   = Label( root, text='(Zum editieren "doppelklicken"         Zum Löschen [entf] drücken )'      )
+   label_editinfo   = Label( root, text='(Zum editieren "doppelklicken"         Zum Löschen [entf] drücken     Rechtsklick zum abspielen)'      )
    label_editinfo.pack()
-   
-   
+
+
    frame_volume     = Frame(root)
-   frame_volume.pack()
+   frame_volume.pack(fill=X)
    label_volume     = Label(    frame_volume, text="Lautsärke:")
    volslider        = Scale(    frame_volume, command=volumeset,
                             from_=0, to=100, orient=HORIZONTAL, length=600)
-   label_volume.grid(   row=0, column=0, padx=10, pady=10)
-   volslider.grid(      row=1, column=0)
+   label_volume.pack(   side=LEFT, padx=10)
+   volslider.pack(      side=LEFT, fill=X, expand=1 )
 ########################   [ listen start/stop  / Quit]
    b1               = Button(root, text='shortcutüberwachung starten'   , command=lambda: startlisten(root.hotkeys))
-   b2               = Button(root, text='shortcutüberwachung stoppen'   , command=lambda: stoplisten()             )  
+   b2               = Button(root, text='shortcutüberwachung stoppen'   , command=lambda: stoplisten()             )
    b3               = Button(root, text='Quit'                          , command=root.quit                        )
    b1.pack(             side=LEFT, padx=5, pady=5   )
    b2.pack(             side=LEFT, padx=5, pady=5   )
    b3.pack(             side=LEFT, padx=5, pady=5   )
-   
+
 #######################   [ Vlc player - ini?! ] ########################################
    root.instanz_vlc = vlc.Instance()
    root.player      = root.instanz_vlc.media_player_new()
    # set the volume slider to the current volume
    #self.volslider.SetValue(self.player.audio_get_volume() / 2)
    volslider.set(root.player.audio_get_volume())
-   
+
    ##### below is a test, now use the File->Open file menu   #### kopiert :-)
    #####media = self.Instance.media_new('output.mp4')
    #####self.player.set_media(media)
    #####self.player.play() # hit the player button
    #####self.player.video_set_deinterlace(str_to_bytes('yadif'))
-   
+
    root.mainloop()
-
-
-
-
-
-
-
-
-
-
-
