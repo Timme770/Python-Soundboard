@@ -1,12 +1,12 @@
 # Python-Soundboard
-## Soundboard zur Bedienung per Tastatur (Shortcut und einfache Tasten) in Python
+### Soundboard zur Bedienung per Tastatur (Shortcut und einfache Tasten) in Python
 
 > Das Projekt wurde mit Kate erstellt. (https://kate-editor.org/)
-> Die Idee und initiale Arbeit (Plugins finden, ersten Code zusammenstellen) stammt von TuxPlayDE (https://www.twitch.tv/tuxplayde)
+> Die Idee und initiale Arbeit (Plugins finden, ersten Code zusammenstellen) stammt von [TuxPlayDE](https://www.twitch.tv/tuxplayde "TuxPlayDE - Twitch")
 > Das Programm muss unter Linux mit 'sudo' (Root-Rechten) laufen um zugriff auf die Tasteneingaben zu bekommen (Anforderung der "keyboard"-Bibliothek).
-> Zum Abspielen der Audiodateien wird VLC (https://www.videolan.org/vlc/) benötigt. Das UI nutzt in dieser Version derzeit "Tkinter".
+> Zum Abspielen der Audiodateien wird [VLC](https://www.videolan.org/vlc/) benötigt. Das UI nutzt in dieser Version derzeit "Tkinter".
 
-### Was wird benötigt? ###### (Wenn nicht schon vorhanden!)
+#### Was wird benötigt? (Wenn nicht schon vorhanden!)
 - Python in Version 3
 - Tkinter
 - VLC
