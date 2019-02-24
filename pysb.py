@@ -1,4 +1,4 @@
-#/urs/bin/python3
+#!/usr/bin/python3
 #
 #***********************************************************************************************************************
 #    This file is part of PYSB Python Soundboard.
@@ -50,12 +50,23 @@
 #python-regex
 
 # TODO rechtsklick auf Liste zum abspielen
-#
+# TODO per entry Volume
+# TODO neues Tuple Dateiformat
+# 
 
 import vlc3 as vlc
 import keyboard, time
 from tkinter import filedialog
 from tkinter import *
+
+if sys.hexversion >= 0x03010000:
+    # use some advanced feature
+    print("Deine Version passt.")
+else:
+    print("Benutze python 3 :D")
+    # use an alternative implementation or warn the user
+
+
 configurationsdatei = 'PYSB.config'
 hk=[]
 
@@ -264,6 +275,7 @@ def PRinttuple():
 if __name__ == '__main__':
    root = Tk()
 
+   root.title("PySB - Python-Soundboard")
    root.hotkeys=readconfig("PYSB.config")
    root.hotkeyAufnahme = "older shiiit xD"
    root.listenkeyeventhandlerliste=[]
