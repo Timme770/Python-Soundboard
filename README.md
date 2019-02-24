@@ -1,11 +1,11 @@
 # Python-Soundboard
-### Soundboard zur Bedienung von Audio-Dateien per Tastatur (Hotkeys und Tastenkombinationen) geschrieben in Python
+### Soundboard zur Wiedergabe von Audio-Dateien per Tastatur (Hotkeys und Tastenkombinationen) geschrieben in Python
 
 > Die Idee und initiale Arbeit (Plugins finden, ersten Code zusammenstellen) stammt von [TuxPlayDE](https://www.twitch.tv/tuxplayde "TuxPlayDE - Twitch").
 
-> Zum Abspielen der Audiodateien wird [VLC](https://www.videolan.org/vlc/) verwendet und benötigt! 
+> Zum Abspielen der Audiodateien wird [VLC](https://www.videolan.org/vlc/) verwendet und benötigt!
 
-> Das UI nutzt in dieser Version derzeit "Tkinter".
+> Das UI nutzt in dieser Version derzeit (noch?) "Tkinter".
 
 > __Das Programm muss unter Linux mit _'sudo'_ (Root-Rechten) ausgeführt werden, um zugriff auf die Tasteneingaben zu bekommen! (Anforderung der "keyboard"-Bibliothek)__
 
